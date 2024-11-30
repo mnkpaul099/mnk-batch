@@ -9,6 +9,7 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.data.RepositoryItemWriter;
+import org.springframework.batch.item.data.builder.RepositoryItemWriterBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.LineMapper;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
@@ -76,7 +77,8 @@ public class EmployeeConfig {
 
     @Bean
     public Step step(){
-        return new StepBuilder("step-1", jobRepository).<Employee, Employee>chunk(10, transactionManager)
+        return new StepBuilder("step-1", jobRepository)
+                .<Employee, Employee>chunk(10, transactionManager)
                 .reader(employeeReader())
                 .processor(employeeProcessor())
                 .writer(employeeWriter())
@@ -87,6 +89,7 @@ public class EmployeeConfig {
     public Job job(){
         return new JobBuilder("employee-job", jobRepository)
                 .flow(step())
-                .end().build();
+                .end()
+                .build();
     }
 }
