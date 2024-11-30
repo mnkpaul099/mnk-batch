@@ -1,0 +1,18 @@
+server:
+  port: 8030
+spring:
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+      show-sql: true
+  batch:
+    jdbc:
+      initialize-schema: ALWAYS
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mainak
+    username: postgres
+    password: Monu@1993
+    driver-class-name: org.postgresql.Driver
