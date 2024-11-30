@@ -11,13 +11,14 @@ import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.data.RepositoryItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.LineMapper;
+import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
@@ -28,21 +29,19 @@ public class EmployeeConfig {
     EmployeeRepo employeeRepo;
 
     @Autowired
-    private JobRepository jobRepository;
+    JobRepository jobRepository;
 
     @Autowired
-    private PlatformTransactionManager transactionManager;
+    PlatformTransactionManager transactionManager;
 
     @Bean
     public FlatFileItemReader<Employee> employeeReader() {
-        FlatFileItemReader<Employee> itemReader = new FlatFileItemReader<>();
-
-        itemReader.setResource(new FileSystemResource("src/main/resources/employee-data.csv"));
-        itemReader.setName("csv-reader");
-        itemReader.setLinesToSkip(1);
-        itemReader.setLineMapper(lineMapper());
-
-        return itemReader;
+        return new FlatFileItemReaderBuilder<Employee>()
+                .name("csv-reader")
+                .resource(new ClassPathResource("employee-data.csv"))
+                .linesToSkip(1)
+                .lineMapper(lineMapper())
+                .build();
     }
 
     private LineMapper<Employee> lineMapper() {
